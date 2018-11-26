@@ -1,0 +1,146 @@
+﻿
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (sessionStorage.getItem("IsLogin") == "" || sessionStorage.getItem("IsLogin") == null) {
+            $(location).attr("href", "../Login/Login");
+        }
+
+        $("#btnSubmit").click(function () {
+            var PONumber = $.trim($("#tbPONumber").val());
+            var BagModel = $.trim($("#tbBagModel").val());
+            var Price = $.trim($("#tbPrice").val());
+            var CustomerName = $.trim($("#tbCustomerName").val());
+            var Age = $.trim($("#tbAge").val());
+            var City = $.trim($("#tbCity").val());
+            var EmailId = $.trim($("#tbEmail").val());
+            var PhoneNumber = $.trim($("#tbPhoneNumber").val());
+
+            if (PONumber == "") {
+                alert("Please enter Purchase Order Number");
+                $("#tbPONumber").focus();
+                return;
+            }
+            if (BagModel == "") {
+                alert("Please enter Bag Model");
+                $("#tbBagModel").focus();
+                return;
+            }
+            if (Price == "") {
+                alert("Please enter Price");
+                $("#tbPrice").focus();
+                return;
+            }
+            if (CustomerName == "") {
+                alert("Please enter Customer Name");
+                $("#tbCustomerName").focus();
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PurchaseOrder",
+                data: JSON.stringify([BagModel, Price, PONumber, CustomerName, Age, City, EmailId, PhoneNumber]),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if ((data != null) && (data != "undefined")) {
+                        if (data.StatusInd == 1) {
+                            alert(data.StatusMsg);
+                        }
+                        else {
+                            alert(data.StatusMsg);
+                        }
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error");
+                },
+                failure: function (msg) {
+                    alert("Failure");
+                }
+            });
+        });
+
+        $("#btnReset").click(function () {
+            $("#tbPONumber").val('');
+            $("#tbBagModel").val('');
+            $("#tbPrice").val('');
+            $("#tbCustomerName").val('');
+            $("#tbAge").val('');
+            $("#tbCity").val('');
+            $("#tbEmail").val('');
+            $("#tbPhoneNumber").val('');
+        });
+
+        $("#aLogout").click(function () {
+            sessionStorage.removeItem("IsLogin");
+            $(location).attr("href", "../Login/Login");
+        });
+    });
+</script>
+
+
+<div class="w3-row-padding" style="padding-top:20px;">
+    <span class="w3-col s8" style="text-align:left; font-size: 20px; color: maroon; font-weight: bold;">PURCHASE ORDER CREATION</span>
+    <span class="w3-col s12" style="text-align:right; float: right;"><a href="#" id="aLogout" style="font-size: 15px; color: blue; font-weight: normal; text-decoration:none;">Logout</a></span>
+</div>
+<div class="w3-row-padding" style="padding-bottom:20px;">
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; background-color: #F2F4F4; border: 1px solid #ABB2B9;">
+        <h4 style="text-align: left; padding-bottom: 6px; text-decoration: underline;">Purchase Order Details:</h4>
+        <p>PO NUMBER</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbPONumber" id="tbPONumber"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>BAG MODEL</p>
+        <p>
+            <input class="w3-input w3-border" type="text"
+                   name="tbBagModel" id="tbBagModel" style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>PRICE</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbPrice" id="tbPrice"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+    </div>
+</div>
+<div class="w3-row-padding" style="padding-bottom:20px;">
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; background-color: #F2F4F4; border: 1px solid #ABB2B9;">
+        <h4 style="text-align: left; padding-bottom: 6px; text-decoration: underline;">Customer Details:</h4>
+        <p>NAME</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbCustomerName" id="tbCustomerName"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>AGE</p>
+        <p>
+            <input class="w3-input w3-border" type="number" name="tbAge" id="tbAge"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>CITY</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbCity" id="tbCity"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>EMAIL</p>
+        <p>
+            <input class="w3-input w3-border" type="email" name="tbEmail" id="tbEmail"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>PHONE NUMBER</p>
+        <p style="padding-bottom: 20px;">
+            <input class="w3-input w3-border" type="text" name="tbPhoneNumber" id="tbPhoneNumber"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+    </div>
+</div>
+<div class="w3-row-padding" style="padding-bottom:20px;">
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; border: 0px solid #ABB2B9;">
+        <input type="button" id="btnSubmit" value="SUBMIT" class="w3-button w3-block w3-black" />
+        <input type="reset" id="btnReset" value="RESET" />
+    </div>
+</div>
+

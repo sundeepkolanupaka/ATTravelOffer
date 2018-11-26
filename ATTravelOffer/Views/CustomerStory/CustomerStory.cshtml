@@ -1,0 +1,82 @@
+﻿<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (sessionStorage.getItem("IsLogin") == "" || sessionStorage.getItem("IsLogin") == null) {
+            $(location).attr("href", "../Login/Login");
+        }
+
+        if (sessionStorage.getItem("PONumber") != "" && sessionStorage.getItem("PONumber") != null) {
+            $("#tbPONumber").val(sessionStorage.getItem("PONumber"));
+        }
+        $("#btnSubmit").click(function () {
+            var PONumber = $.trim($("#tbPONumber").val());
+            var Story = $.trim($("#tbStory").val());
+
+            if (PONumber == "") {
+                alert("Please enter PO Number");
+                $("#tbPONumber").focus();
+                return;
+            }
+            if (Story == "") {
+                alert("Please enter Story");
+                $("#tbStory").focus();
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/CustomerStory",
+                data: JSON.stringify([PONumber, Story]),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if ((data != null) && (data != "undefined")) {
+                        alert(data.StatusMsg);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error");
+                },
+                failure: function (msg) {
+                    alert("Failure");
+                }
+            });
+        });
+
+        $("#btnReset").click(function () {
+            $("#tbPONumber").val('');
+            $("#tbStory").val('');
+        });
+
+        $("#aLogout").click(function () {
+            sessionStorage.removeItem("IsLogin");
+            $(location).attr("href", "../Login/Login");
+        });
+    });
+</script>
+
+<div class="w3-row-padding" style="padding-top:20px;">
+    <span class="w3-col s8" style="text-align:left; font-size: 20px; color: maroon; font-weight: bold;">CUSTOMER STORY</span>
+    <span class="w3-col s12" style="text-align:right; float: right;"><a href="#" id="aLogout" style="font-size: 15px; color: blue; font-weight: normal; text-decoration:none;">Logout</a></span>
+</div>
+<div class="w3-row-padding" style="padding-bottom:20px;">
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; background-color: #F2F4F4; border: 1px solid #ABB2B9;">
+        <p>PO NUMBER</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbPONumber" id="tbPONumber"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>STORY</p>
+        <p style="padding-bottom: 20px;">
+            <textarea class="w3-input w3-border" 
+                   name="tbStory" id="tbStory" style="border-color: #ABB2B9!important;"></textarea>
+        </p>
+
+        <input type="button" id="btnSubmit" value="SUBMIT" class="w3-button w3-block w3-black" />
+        <input type="reset" id="btnReset" value="RESET" />
+    </div>
+</div>
+
+

@@ -1,0 +1,156 @@
+﻿<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        sessionStorage.removeItem("PONumber");
+        sessionStorage.removeItem("IsLogin");
+
+        $("#tbLoginId").focus();
+
+        $("#btnSellerLogin").click(function () {
+            fnSellerLogin();
+        });
+
+        $("#tbLoginId, #tbPassword").keypress(function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                fnSellerLogin();
+            }
+        });
+
+        $("#btnReset").click(function () {
+            $("#tbLoginId").val('');
+            $("#tbPassword").val('');
+        });
+
+        $("#btnCustomerLogin").click(function () {
+            fnCustomerLogin();
+        });
+
+        $("#tbPurchaseOrder").keypress(function (e) {
+            if (e.which == 13) {
+                e.preventDefault();
+                fnCustomerLogin();
+            }
+        });
+
+        $("#btnCustomerReset").click(function () {
+            $("#tbPurchaseOrder").val('');
+        });
+    });
+
+    function fnSellerLogin() {
+        var LoginId = $.trim($("#tbLoginId").val());
+        var Password = $.trim($("#tbPassword").val());
+        
+        if (LoginId == "") {
+            alert("Please enter Login Id");
+            $("#tbLoginId").focus();
+            return;
+        }
+        if (Password == "") {
+            alert("Please enter Password");
+            $("#tbPassword").focus();
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/api/Login",
+            data: JSON.stringify([LoginId, Password]),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if ((data != null) && (data != "undefined")) {
+                    if (data.ResultStatus.StatusInd == 1) {
+                        sessionStorage.setItem("IsLogin", "Y");
+                        $(location).attr("href", "../PurchaseOrder/PurchaseOrder");
+                    }
+                    else {
+                        alert(data.ResultStatus.StatusMsg);
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error");
+            },
+            failure: function (msg) {
+                alert("Failure");
+            }
+        });
+    }
+
+    function fnCustomerLogin() {
+        var PurchaseOrder = $.trim($("#tbPurchaseOrder").val());
+        
+        if (PurchaseOrder == "") {
+            alert("Please enter Purchase Order Number");
+            $("#tbPurchaseOrder").focus();
+            return;
+        }
+
+        //sessionStorage.setItem("IsLogin", "Y");
+        //sessionStorage.setItem("PONumber", PurchaseOrder);
+        //$(location).attr("href", "../CustomerStory/CustomerStory");
+
+        $.ajax({
+            type: "POST",
+            url: "/api/CustomerLogin",
+            data: JSON.stringify([PurchaseOrder]),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                if ((data != null) && (data != "undefined")) {
+                    if (data.StatusInd == 1) {
+                        sessionStorage.setItem("IsLogin", "Y");
+                        sessionStorage.setItem("PONumber", PurchaseOrder);
+                        $(location).attr("href", "../CustomerStory/CustomerStory");
+                    }
+                    else {
+                        alert(data.StatusMsg);
+                    }
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error");
+            },
+            failure: function (msg) {
+                alert("Failure");
+            }
+        });
+    }
+</script>
+
+<div id="divSellerLogin" class="w3-row-padding" style="padding-bottom:20px; display: block;">
+    <h1 style="font-size: 20px; color: maroon; font-weight: bold;">SELLER LOGIN</h1>
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; background-color: #F2F4F4; border: 1px solid #ABB2B9;">
+        <p>LOGIN ID</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbLoginId" id="tbLoginId"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <p>PASSWORD</p>
+        <p style="padding-bottom: 20px;">
+            <input class="w3-input w3-border" type="password"
+                   name="tbPassword" id="tbPassword" style="border-color: #ABB2B9!important;" />
+        </p>
+
+        <input type="button" id="btnSellerLogin" value="LOGIN" class="w3-button w3-block w3-black" />
+        <input type="reset" id="btnReset" value="RESET" />
+    </div>
+</div>
+<div id="divCustomerLogin" class="w3-row-padding" style="padding-bottom:20px; display: block;">
+    <h1 style="font-size: 20px; color: maroon; font-weight: bold;">CUSTOMER LOGIN</h1>
+    <div class="w3-col s12" style="padding: 10px 10px 20px 10px; background-color: #F2F4F4; border: 1px solid #ABB2B9;">
+        <p>PURCHASE ORDER #</p>
+        <p>
+            <input class="w3-input w3-border" type="text" name="tbPurchaseOrder" id="tbPurchaseOrder"
+                   style="border-color: #ABB2B9!important;" />
+        </p>
+        <input type="button" id="btnCustomerLogin" value="LOGIN" class="w3-button w3-block w3-black" />
+        <input type="reset" id="btnCustomerReset" value="RESET" />
+    </div>
+</div>
+
+
