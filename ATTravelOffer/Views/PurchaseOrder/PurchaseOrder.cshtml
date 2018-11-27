@@ -4,9 +4,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        if (sessionStorage.getItem("IsLogin") == "" || sessionStorage.getItem("IsLogin") == null) {
-            $(location).attr("href", "../Login/Login");
-        }
+        //if (sessionStorage.getItem("IsLogin") == "" || sessionStorage.getItem("IsLogin") == null) {
+        //    $(location).attr("href", "../Login/Login");
+        //}
 
         $("#btnSubmit").click(function () {
             var PONumber = $.trim($("#tbPONumber").val());
@@ -38,7 +38,7 @@
                 $("#tbCustomerName").focus();
                 return;
             }
-
+            
             $.ajax({
                 type: "POST",
                 url: "/api/PurchaseOrder",
@@ -80,6 +80,7 @@
             $(location).attr("href", "../Login/Login");
         });
     });
+    
 </script>
 
 

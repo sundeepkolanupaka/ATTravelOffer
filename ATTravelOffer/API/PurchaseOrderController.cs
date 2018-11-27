@@ -29,7 +29,14 @@ namespace ATTravelOffer.API
             purchaseOrder.Price = Convert.ToDecimal(values[1]);
             purchaseOrder.Number = values[2];
             purchaseOrder.CustomerName = values[3];
-            purchaseOrder.Age = Convert.ToInt16(values[4]);
+            if(values[4] != "")
+            {
+                purchaseOrder.Age = Convert.ToInt16(values[4]);
+            }
+            else
+            {
+                purchaseOrder.Age = 0;
+            }
             purchaseOrder.City = values[5];
             purchaseOrder.EmailId = values[6];
             purchaseOrder.PhoneNumber = values[7];
